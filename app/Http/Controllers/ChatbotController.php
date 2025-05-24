@@ -17,6 +17,11 @@ class ChatbotController extends Controller
 
         //build the OpenAI prompt
         $prompt = "User asked: \"$userQuestion\". Choose the most relevant FAQ from below and respond ONLY with the FAQ answer:\n\n";
+
+        if (!$faqData || !is_array($faqData)) {
+            return response()->json(['error' => 'FAQ data is missing or malformed.'], 500);
+        }
+        
         foreach ($faqData as $faq) {
             $prompt .= "Q: " . $faq['question'] . "\nA: " . $faq['answer'] . "\n\n";
         }
@@ -30,13 +35,18 @@ class ChatbotController extends Controller
             ->make();
 
         //get a response from OpenAI
-        $response = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a helpful FAQ assistant for a Tech LMS.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-        ]);
+        try {
+            $response = $client->chat()->create([
+                'model' => 'gpt-3.5-turbo',
+                'messages' => [
+                    ['role' => 'system', 'content' => 'You are a helpful FAQ assistant for a Tech LMS.'],
+                    ['role' => 'user', 'content' => $prompt],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'OpenAI request failed: ' . $e->getMessage()], 500);
+        }
+        
 
         $botAnswer = $response->choices[0]->message->content;
 
