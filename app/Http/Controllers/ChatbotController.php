@@ -13,7 +13,7 @@ class ChatbotController extends Controller
         $userQuestion = $request->input('question');
 
         //load FAQs from JSON
-        $faqData = json_decode(file_get_contents(storage_path('app/faqs.json')), true);
+        $faqData = json_decode(file_get_contents(public_path('faqs.json')), true);
 
         //build the OpenAI prompt
         $prompt = "User asked: \"$userQuestion\". Choose the most relevant FAQ from below and respond ONLY with the FAQ answer:\n\n";
