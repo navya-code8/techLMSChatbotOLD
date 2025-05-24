@@ -14,7 +14,7 @@
         async function ask() {
             const question = document.getElementById('question').value;
 
-            const response = await fetch("{{ url('/ask') }}", {
+            const response = await fetch("{{ url('/api/ask') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
