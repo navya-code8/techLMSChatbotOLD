@@ -9,3 +9,8 @@ Route::get('/', function () {
 Route::get('/test-api', function () {
     return response()->json(['message' => 'API route is working!']);
 });
+
+Route::get('/chatbot', function () {
+    return view('chatbot');
+});
+
